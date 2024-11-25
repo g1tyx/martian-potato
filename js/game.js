@@ -1935,7 +1935,7 @@ function initializeHarvestChart() {
         data: {
             labels: [],
             datasets: [{
-                label: 'Total Potatoes Harvested',
+                label: '土豆收获总量',
                 data: [],
                 borderColor: '#C2A378',
                 borderWidth: 2,
@@ -1968,7 +1968,7 @@ function initializeHarvestChart() {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Total Potatoes Harvested'
+                        text: '土豆收获总量'
                     }
                 }
             },
