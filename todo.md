@@ -66,33 +66,29 @@ TODO:
 - [x] Add minimize functionality to the neural network console
 - [x] Add potato sentience upgrade effect
 - [x] Mobile styling
---------------------------------------------------------------------------------------------
 - [x] Fix UI scaling and accessibility
-- [ ] Implement production statistics panel
-    - [ ] Resource consumption per machine
+- [x] Fix Nuclear Ice Melter upgrade control switch bug
+--------------------------------------------------------------------------------------------
+- [ ] Implement automation panel
+    - [ ] Resource consumption + production rates per machine
     - [ ] Net production rates
-    - [ ] Machine states overview
-- [ ] Create upgrades history panel
-    - [ ] List of purchased upgrades
-    - [ ] Specifications viewer
+    - [ ] Machine states
     - [ ] Tooltips system
-- [ ] Fix Nuclear Ice Melter upgrade control switch bug
-    - [ ] Maintain visibility of existing control switches
-    - [ ] Ensure proper state management
-- [ ] Optimize late-game performance
-    - [ ] Profile Quantum Spud Spawner impact
-    - [ ] Implement performance monitoring
-    - [ ] Optimize game loop
 - [ ] Enhance upgrade UI/UX
     - [ ] Implement upgrade categories
     - [ ] Add cost history view
     - [ ] Update typography
     - [ ] Improve upgrade descriptions
-- [ ] Add more/better production stats
 - [ ] Balance upgrade costs and effects
 - [ ] Implement nuclear meltdown if too much ice is melted too quickly
 - [ ] Create instructions for how to play
 - [ ] Write a README.md for the project
+- [ ] Implement toast notification settings
+    - [ ] Add toggle for all toast notifications
+    - [ ] Add option for "Important notifications only"
+    - [ ] Create UI for notification preferences
+    - [ ] Define which notifications are "important"
+    - [ ] Persist notification settings in save game
 
 
 

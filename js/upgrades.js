@@ -130,7 +130,7 @@ const upgrades = [
     },
     { 
         name: "Quantum Spud Spawner", 
-        cost: 10000,
+        cost: 1000,
         effect: function() { 
             unlockQuantumSpudSpawner(); 
         },
@@ -208,9 +208,24 @@ const upgrades = [
         count: 0,
         repeatable: false
     },
+    {
+        name: "Nutrient Prospecting Rover",
+        cost: 50,
+        effect: () => {
+            addNutrientProspectingRover();
+        },
+        icon: "🚜",
+        description: "Deploys a rover to prospect for nutrients in Martian regolith. Generates 6 nutrients every 20 seconds.",
+        metaMessage: "Robotic prospector. This tireless rover scours the Martian surface for precious nutrients, providing a steady stream of resources to fuel your growth.",
+        weight: 4,
+        category: "nutrients",
+        tier: 1,
+        count: 0,
+        repeatable: true
+    },
     { 
         name: "Martian Bucket-Wheel Excavator", 
-        cost: 750,
+        cost: 500,
         effect: () => {
             unlockBucketWheelExcavator();
             isBucketWheelExcavatorUnlocked = true;
@@ -228,7 +243,7 @@ const upgrades = [
     },
     { 
         name: "Subterranean Tuber Tunneler",
-        cost: 2500,
+        cost: 1000,
         effect: () => {
             unlockSubterraneanTuberTunneler();
             isSubterraneanTuberTunnelerUnlocked = true;
@@ -245,7 +260,7 @@ const upgrades = [
     },
     { 
         name: "Martian Potato Colonizer", 
-        cost: 50000,
+        cost: 5000,
         effect: () => {
             console.log('Executing Martian Potato Colonizer upgrade effect');
             unlockMartianPotatoColonizer();
@@ -280,7 +295,7 @@ const upgrades = [
     },
     {
         name: "Polar Cap Mining",
-        cost: 1500,
+        cost: 1000,
         effect: () => { 
             unlockPolarCapMining();
         },
@@ -296,7 +311,7 @@ const upgrades = [
     },
     {
         name: "Cometary Ice Harvester",
-        cost: 5000,
+        cost: 2000,
         effect: () => { 
             unlockCometaryIceHarvester();
         },
@@ -327,7 +342,7 @@ const upgrades = [
     },
     {
         name: "Nuclear Ice Melter",
-        cost: 1000,
+        cost: 500,
         effect: () => { 
             unlockNuclearIceMelter();
         },
@@ -453,7 +468,7 @@ const upgrades = [
     },
     {
         name: "Potato Chip",
-        cost: 500,
+        cost: 200,
         effect: () => {
             unlockNextTier(); // Unlock tier 3
         },
@@ -469,7 +484,7 @@ const upgrades = [
     },
     {
         name: "Potato Computer",
-        cost: 2000,
+        cost: 1000,
         effect: () => {
             unlockNextTier(); // Unlock tier 4
         },
@@ -485,7 +500,7 @@ const upgrades = [
     },
     {
         name: "Potato Quantum Computer",
-        cost: 10000,
+        cost: 2000,
         effect: () => {
             unlockNextTier(); // Unlock tier 5
         },
@@ -938,6 +953,7 @@ function addAutoHarvester() {
         interval: null,
         cost: Math.floor(100 * Math.pow(1.15, upgrades.find(u => u.name === "Autonomous Harvesting Rover").count))
     };
+    
     autoHarvesters.push(autoHarvester);
     startAutoHarvester(autoHarvester);
     updateDisplay();
@@ -961,11 +977,9 @@ function checkAndRestartAutoHarvesters() {
 
 // Harvest a single ready potato from the field
 function harvestOneReadyPotato() {
-    for (let i = 0; i < potatoField.length; i++) {
-        if (potatoField[i] && potatoField[i].growthStage >= 100) {
-            harvestPotatoAtIndex(i);
-            break; // Only harvest one potato
-        }
+    const readyIndex = potatoField.findIndex(potato => potato?.growthStage >= 100);
+    if (readyIndex !== -1) {
+        harvestPotatoAtIndex(readyIndex);
     }
 }
 

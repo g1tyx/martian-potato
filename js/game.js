@@ -129,6 +129,7 @@ const defaultAchievements = {
 };
 let achievements = { ...defaultAchievements };
 let harvestHistory = [];
+const activeToasts = new Map();
 
 // Debug Variables
 let fpsValues = [];
@@ -148,6 +149,18 @@ potatoTemplate.innerHTML = `
 
 // Add to the game state variables section at top
 let neuralNetworkActive = false;
+
+let isTabActive = true;
+let quantumSpawnerStats = {
+    updates: 0,
+    skippedUpdates: 0,
+    lastUpdateTime: Date.now()
+};
+
+// Add visibility change listener
+document.addEventListener('visibilitychange', () => {
+    isTabActive = !document.hidden;
+});
 
 // ==========================================
 //            CORE GAME FUNCTIONS
@@ -620,7 +633,11 @@ function saveGame() {
         isBucketWheelExcavatorActive: window.isBucketWheelExcavatorActive,
         isSubterraneanTuberTunnelerActive: window.isSubterraneanTuberTunnelerActive,
         neuralNetworkActive: window.neuralNetworkActive,
-        neuralNetworkState: getNeuralNetworkState()
+        neuralNetworkState: getNeuralNetworkState(),
+        nutrientProspectingRovers: nutrientProspectingRovers.map(rover => ({
+            id: rover.id,
+            nutrients: rover.nutrients
+        }))
     };
     localStorage.setItem('martianPotatoSave', JSON.stringify(gameState));
     showToast('Game saved successfully!', 'Your progress has been saved.', 'success');
@@ -840,6 +857,26 @@ function loadGame() {
             if (neuralNetworkActive) {
                 initializeNeuralNetwork(gameState.neuralNetworkState);
             }
+
+            if (gameState.nutrientProspectingRovers) {
+                nutrientProspectingRovers = gameState.nutrientProspectingRovers.map(savedRover => {
+                    const rover = {
+                        id: savedRover.id,
+                        intervalId: null,
+                        nutrients: savedRover.nutrients
+                    };
+
+                    rover.intervalId = setInterval(() => {
+                        const nutrientsCollected = 6;
+                        rover.nutrients += nutrientsCollected;
+                        nutrients += nutrientsCollected;
+                        updateDisplay();
+                        showToast('Nutrients Collected', `Your Prospecting Rover collected ${nutrientsCollected} nutrients!`, 'success', 2000);
+                    }, 20000);
+
+                    return rover;
+                });
+            }
         } catch (error) {
             console.error('Error parsing saved game state:', error);
             showToast('Error loading game', 'There was an error loading your saved game. Starting a new game.', 'error');
@@ -905,11 +942,31 @@ function updateActionCards() {
             card.style.display = shouldBeVisible ? 'block' : 'none';
         }
 
-        // Only check depletion status for visible, depletable cards
-        if (shouldBeVisible && depletableCards.includes(cardId)) {
-            updateDepletedActionCard(cardId, areResourcesDepleted, "Resources Depleted");
+        // Preserve toggle states for automation devices
+        if (shouldBeVisible) {
+            const toggle = card.querySelector('input[type="checkbox"]');
+            if (toggle && window[getActivityStateVariable(cardId)] !== undefined) {
+                toggle.checked = window[getActivityStateVariable(cardId)];
+            }
+            
+            // Check depletion status for depletable cards
+            if (depletableCards.includes(cardId)) {
+                updateDepletedActionCard(cardId, areResourcesDepleted, "Resources Depleted");
+            }
         }
     });
+}
+
+// Helper function to get activity state variable name
+function getActivityStateVariable(cardId) {
+    const stateMap = {
+        'nuclear-ice-melter-container': 'isNuclearIceMelterActive',
+        'subsurface-aquifer-tapper-container': 'isSubsurfaceAquiferTapperActive',
+        'bucket-wheel-excavator-container': 'isBucketWheelExcavatorActive',
+        'subterranean-tuber-tunneler-container': 'isSubterraneanTuberTunnelerActive',
+        'polar-cap-mining-container': 'isPolarCapMiningActive'
+    };
+    return stateMap[cardId];
 }
 
 function onResourcesDepleted() {
@@ -1130,28 +1187,69 @@ document.addEventListener('DOMContentLoaded', function() {
 // ==========================================
 
 // Display a toast notification to the user
-window.showToast = function(title, message, type = 'achievement') {
+window.showToast = function(title, message, type = 'achievement', duration = 3000) {
     console.log("Showing toast:", title, message, type);
     const toastContainer = document.getElementById('toast-container');
+    
+    // Create a unique key for this type of toast
+    const toastKey = `${title}-${message}-${type}`;
+    
+    // Check if this toast is already showing
+    if (activeToasts.has(toastKey)) {
+        // Update existing toast
+        const existingToast = activeToasts.get(toastKey);
+        existingToast.count++;
+        
+        // Update the message to show count
+        const messageEl = existingToast.element.querySelector('.toast-message');
+        messageEl.textContent = `${message} (×${existingToast.count})`;
+        
+        // Reset the removal timeout
+        clearTimeout(existingToast.timeout);
+        existingToast.timeout = setTimeout(() => {
+            removeToast(toastKey);
+        }, duration);
+        
+        return;
+    }
+    
+    // Create new toast
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     toast.innerHTML = `
         <div class="toast-title">${title}</div>
         <div class="toast-message">${message}</div>
     `;
+    
     toastContainer.appendChild(toast);
-
-    // Trigger reflow to enable transition
-    toast.offsetHeight;
-
+    toast.offsetHeight; // Trigger reflow
     toast.classList.add('show');
+    
+    // Store the toast info
+    const timeoutId = setTimeout(() => {
+        removeToast(toastKey);
+    }, duration);
+    
+    activeToasts.set(toastKey, {
+        count: 1,
+        element: toast,
+        timeout: timeoutId
+    });
+}
 
+function removeToast(toastKey) {
+    const toastInfo = activeToasts.get(toastKey);
+    if (!toastInfo) return;
+    
+    const toast = toastInfo.element;
+    toast.classList.remove('show');
+    
     setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => {
-            toastContainer.removeChild(toast);
-        }, 300);
-    }, 3000);
+        if (toast.parentElement) {
+            toast.parentElement.removeChild(toast);
+        }
+        activeToasts.delete(toastKey);
+    }, 300);
 }
 
 // Check and update game achievements
@@ -1261,6 +1359,8 @@ function updateDisplay() {
     if (neuralNetworkActive) {
         updateTerminalDisplay(); // Update neural network terminal
     }
+    document.getElementById('nutrient-prospecting-rovers').textContent = `Prospecting Rovers: ${nutrientProspectingRovers.length}`;
+    document.getElementById('nutrients').textContent = `Nutrients: ${nutrients}`;
 }
 
 function updateAutoHarvestersInfo() {
@@ -1662,21 +1762,62 @@ function martianPotatoColonizerEffect() {
 //       QUANTUM SPUD SPAWNER FUNCTIONS
 // ==========================================
 
+
+// Enhanced visibility change listener
+document.addEventListener('visibilitychange', () => {
+    const wasActive = isTabActive;
+    isTabActive = !document.hidden;
+    console.log(`Tab visibility changed: ${wasActive ? 'active → inactive' : 'inactive → active'}`);
+    
+    if (isTabActive && isQuantumSpudSpawnerActive) {
+        console.log(`Quantum spawner stats:
+            Updates: ${quantumSpawnerStats.updates}
+            Skipped: ${quantumSpawnerStats.skippedUpdates}
+            Time since last update: ${Date.now() - quantumSpawnerStats.lastUpdateTime}ms`);
+    }
+});
+
+// Modified startQuantumSpudSpawner with logging
 function startQuantumSpudSpawner() {
     if (!isQuantumSpudSpawnerActive) {
+        console.log('Starting Quantum Spud Spawner');
         isQuantumSpudSpawnerActive = true;
+        quantumSpawnerStats.lastUpdateTime = Date.now();
+        
         quantumSpudSpawnerInterval = setInterval(() => {
+            if (!isTabActive) {
+                quantumSpawnerStats.skippedUpdates++;
+                return;
+            }
+            
+            let changes = false;
+            const startTime = Date.now();
+            
+            // Single pass through field
             for (let i = 0; i < potatoField.length; i++) {
-                if (potatoField[i] === null && consumeResources()) {
-                    // Plant a new potato with isQuantumSpawned set to true
+                if (!potatoField[i] && consumeResources()) {
                     potatoField[i] = createPotato(true, true);
-                    updatePotatoFieldDisplay();
-                } else if (potatoField[i] && potatoField[i].growthStage >= 100) {
-                    // Harvest the potato
+                    changes = true;
+                } else if (potatoField[i]?.growthStage >= 100) {
                     harvestPotatoAtIndex(i, true);
+                    changes = true;
                 }
             }
-            updateDisplay();
+            
+            // Only update if needed
+            if (changes) {
+                updatePotatoFieldDisplay();
+                updateDisplay();
+            }
+            
+            quantumSpawnerStats.updates++;
+            quantumSpawnerStats.lastUpdateTime = Date.now();
+            
+            // Log if update took longer than expected
+            const updateTime = Date.now() - startTime;
+            if (updateTime > 100) { // Log slow updates
+                console.log(`Quantum update took ${updateTime}ms`);
+            }
         }, 600);
     }
 }
@@ -1731,10 +1872,14 @@ function updateQuantumSpudSpawnerToggle() {
 // Unlock the Nuclear Ice Melter
 function unlockNuclearIceMelter() {
     isNuclearIceMelterUnlocked = true;
+    
+    // Add to unlockedActionCards if not already present
     if (!unlockedActionCards.includes('nuclear-ice-melter-container')) {
         unlockedActionCards.push('nuclear-ice-melter-container');
     }
+    
     updateActionCards();
+    initializeNuclearIceMelterControls();
 }
 
 // Start the Nuclear Ice Melter
@@ -2284,4 +2429,24 @@ function getAutomationDevicesCount() {
         autoharvesters: autoHarvesters.length,
         quantum_spawner: isQuantumSpudSpawnerActive ? 1 : 0
     };
+}
+
+let nutrientProspectingRovers = [];
+
+function addNutrientProspectingRover() {
+    const rover = {
+        id: Date.now(),
+        intervalId: null,
+        nutrients: 0
+    };
+
+    rover.intervalId = setInterval(() => {
+        const nutrientsCollected = 6;
+        rover.nutrients += nutrientsCollected;
+        nutrients += nutrientsCollected;
+        updateDisplay();
+        showToast('Nutrients Collected', `Your Prospecting Rover collected ${nutrientsCollected} nutrients!`, 'success', 2000);
+    }, 20000);
+
+    nutrientProspectingRovers.push(rover);
 }
