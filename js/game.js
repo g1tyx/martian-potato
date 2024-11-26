@@ -214,7 +214,7 @@ function initializeUI() {
 
 // Function to reset the game state
 function resetGame() {
-    if (confirm('Are you sure you want to reset the game? This will erase all your progress.')) {
+    if (confirm('你确定要重置游戏吗？这会抹掉你所有的进度。')) {
         neuralNetworkActive = false;
         localStorage.removeItem('martianPotatoSave');
         hasSeenInitialGlow = false;
