@@ -85,7 +85,7 @@ var cnItems = {
     "Launch": "发射",
     "Manual Ice Melting": "人工融冰",
     "Martian Map": "火星地图",
-    "Martian Potato": "火星的土豆",
+    "Martian Potato": "火星土豆",
     "Martian Potato Colonizer": "火星土豆殖民者",
     "No saved game found": "未找到已保存的游戏",
     "Nuclear Ice Melter": "核融冰机",
