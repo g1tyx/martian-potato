@@ -1,0 +1,40 @@
+<h1>🥔 v1.1 Update Notes</h1>
+<h2>Major Features</h2>
+<ul>
+            <li>Added Nutrient Prospecting Rover - Early game automation for nutrient gathering</li>
+            <li>Fixed automation toggle states preservation</li>
+            <li>Rebalanced upgrade costs for smoother progression</li>
+            <li>Optimized performance for background tabs</li>
+            <li>Grouped notifications so they don't reduce visibility</li>
+        </ul>
+<h2>Balance Changes</h2>
+<ul>
+            <li>Reduced early-mid game upgrade costs</li>
+            <li>Added Nutrient Prospecting Rover (6 nutrients/20s)</li>
+            <li>Adjusted resource generation rates</li>
+        </ul>
+<h2>Bug Fixes</h2>
+<ul>
+            <li>Fixed automation toggles disappearing on Nuclear Ice Melter unlock</li>
+            <li>Preserved Nuclear Ice Melter controls through save/load cycles</li>
+            <li>Fixed automation device state persistence</li>
+            <li>Fixed scrolling issue</li>
+        </ul>
+<h2>Known Issues</h2>
+<ul>
+            <li>Automation panel still pending implementation
+                <ul>
+                    <li>Resource consumption/production rates</li>
+                    <li>Net production tracking</li>
+                    <li>Machine states overview</li>
+                </ul>
+            </li>
+            <li>Upgrade UI improvements planned
+                <ul>
+                    <li>Categories</li>
+                    <li>Cost history</li>
+                    <li>Enhanced descriptions</li>
+                </ul>
+            </li>
+        </ul>
+<p>Special thanks to the community for their feedback and bug reports!</p>

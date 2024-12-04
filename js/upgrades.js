@@ -769,18 +769,17 @@ function getUpgradeCost(upgrade) {
 
 // Display a modal with detailed information about an upgrade
 function showUpgradeModal(upgrade) {
-    console.log("Showing upgrade modal for:", upgrade.name);
     const existingModal = document.querySelector('.upgrade-modal');
     if (existingModal) {
         existingModal.remove();
     }
 
     const modal = document.createElement('div');
-    modal.className = 'modal upgrade-modal'; // Assign both classes
+    modal.className = 'modal upgrade-modal';
     
     const upgradeCost = getUpgradeCost(upgrade);
     const content = `
-        <div class="modal-content">
+        <div class="modal-content upgrade-modal-content">
             <span class="close-modal">&times;</span>
             <h2>${upgrade.name}</h2>
             <p>${upgrade.description}</p>
@@ -790,13 +789,22 @@ function showUpgradeModal(upgrade) {
     `;
     modal.innerHTML = content;
 
+    // Add modal to body
+    document.body.appendChild(modal);
+
+    // Force a reflow and show the modal
+    modal.offsetHeight;
+    modal.style.display = 'flex';
+
+    // Add event listeners
     const buyButton = modal.querySelector('.buy-upgrade-button');
+    const closeButton = modal.querySelector('.close-modal');
+
     buyButton.addEventListener('click', () => {
         buyUpgrade(upgrade);
         modal.remove();
     });
 
-    const closeButton = modal.querySelector('.close-modal');
     closeButton.addEventListener('click', () => {
         modal.remove();
     });
@@ -806,8 +814,6 @@ function showUpgradeModal(upgrade) {
             modal.remove();
         }
     });
-
-    document.body.appendChild(modal);
 }
 
 // Handle the purchase of an upgrade

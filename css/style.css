@@ -132,16 +132,16 @@ button:hover, button:disabled {
 
 .poof-animation-red {
     position: absolute;
-    width: 50px; /* These will be overridden inline */
-    height: 50px; /* These will be overridden inline */
-    left: 0;
-    top: 0;
+    width: 60px;  /* Match potato size */
+    height: 60px; /* Match potato size */
     background: radial-gradient(circle, rgba(255,0,0,0.9) 0%, rgba(255,69,0,0) 70%);
     border-radius: 50%;
     animation: poofEffectRed 0.5s ease-out forwards;
     pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%) scale(0.5); /* Start centered and scaled down */
+    z-index: 100; /* Lower than the panel */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 @keyframes poofEffectRed {
@@ -285,7 +285,6 @@ button:hover, button:disabled {
     left: 0;
     right: 0;
     background-color: rgba(76, 175, 80, 0.4);
-    transition: height 0.5s ease-out, opacity 0.3s ease;
     z-index: 5;
     opacity: 0;
 }
@@ -321,9 +320,24 @@ button:hover, button:disabled {
     animation: pulse 2s infinite ease-in-out;
 }
 
-.quantum-potato {
-    background-color: #9e483b; /* Same as normal potato */
-    box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.3); /* Red tint */
+@keyframes quantum-pulse {
+    0% { 
+        background-color: #9e483b;
+        box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.3);
+    }
+    50% {
+        background-color: #b23c2d;
+        box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.5);
+    }
+    100% {
+        background-color: #9e483b;
+        box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.3);
+    }
+}
+
+.potato.quantum-potato {
+    background-color: #9e483b !important;
+    box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.3) !important;
     animation: quantum-pulse 2s infinite alternate;
 }
 
@@ -685,7 +699,7 @@ button:hover, button:disabled {
     padding-top: 1px;
     position: relative;
     vertical-align: middle;
-    margin: 14px auto; 
+    margin: 14px auto;
     color: #297597;
     box-shadow: 0 0 5px rgba(255,255,255,.4), 
                 0 2px 1px -1px rgba(255,255,255,.7) inset, 
@@ -721,7 +735,7 @@ button:hover, button:disabled {
 }
 
 .toggle-switch div:first-letter {
-    letter-spacing: 40px; 
+    letter-spacing: 40px;
 }
 
 .toggle-switch :checked ~ div {
@@ -750,7 +764,7 @@ button:hover, button:disabled {
 .toggle-switch .indicator {
     position: absolute;
     top: 14px;
-    right: -25px; 
+    right: -25px;
     width: 8px;
     height: 25px;
     box-shadow: 0 0 8px #000 inset;
@@ -782,29 +796,152 @@ button:hover, button:disabled {
 
 /* Modals */
 .modal {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    top: 50%;
+    overflow-y: auto;
 }
 
-.modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    width: 300px;
-    max-width: 90%;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+/* Settings Modal Specific Styles */
+.settings-modal-content {
     position: relative;
+    background-color: white;
+    max-width: 500px;
+    width: 90%;
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Close Button */
+.close-settings-modal {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.close-settings-modal:hover {
+    color: #333;
+}
+
+.settings-section {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.settings-footer {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    margin-top: auto;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.setting-item:last-child {
+    margin-bottom: 0;
+}
+
+.setting-item label {
+    font-size: 16px;
+    color: #444;
+}
+
+.settings-select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+.placeholder-text {
+    color: #888;
+    font-style: italic;
+    margin: 8px 0;
+}
+
+.settings-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+.settings-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+#save-settings {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#save-settings:hover {
+    background-color: #45a049;
+}
+
+#cancel-settings {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+#cancel-settings:hover {
+    background-color: #e8e8e8;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+    .settings-modal-content {
+        width: 90%;
+        margin: 10px;
+        max-height: 85vh;
+        padding: 15px;
+    }
+
+    .settings-section {
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+
+    .setting-item {
+        margin-bottom: 12px;
+    }
+}
+
+/* Icon button styles */
+.icon-button {
+    font-size: 20px !important;
+    padding: 5px 10px !important;
+    line-height: 1 !important;
 }
 
 .chart-modal-content {
@@ -917,7 +1054,7 @@ button:hover, button:disabled {
     font-size: 24px;
 }
 
-#save-button, #reset-button, #chart-button {
+#save-button, #reset-button, #chart-button, #settings-button, #help-button, #automation-panel-toggle {
     display: inline-block;
     width: auto;
     margin: 5px 0 5px 10px;
@@ -931,15 +1068,15 @@ button:hover, button:disabled {
     transition: background-color 0.2s;
 }
 
-#save-button:hover, #reset-button:hover, #chart-button:hover {
+#save-button:hover, #reset-button:hover, #chart-button:hover, #settings-button:hover {
     background-color: #e0e0e0;
 }
 
-#save-button:active, #reset-button:active, #chart-button:active {
+#save-button:active, #reset-button:active, #chart-button:active, #settings-button:active {
     background-color: #d0d0d0;
 }
 
-#chart-button {
+#chart-button, #settings-button, #help-button, #automation-panel-toggle {
     padding: 5px 8px;
     font-size: 18px;
     line-height: 1;
@@ -1063,7 +1200,7 @@ button:hover, button:disabled {
 
     /* Modal adjustments */
     .modal-content {
-        width: 95%;
+        width: 90%;
         padding: 15px;
     }
 
@@ -1733,12 +1870,13 @@ button:hover, button:disabled {
     margin: auto;
     text-align: center;
     color: #00ff00;
-    padding: 40px;
+    padding: 20px 20px; /* Adjusted padding for mobile */
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 30px;
     font-family: monospace;
+    min-height: 100%; /* Ensure content fills the screen */
 }
 
 .glowing-potato {
@@ -1936,3 +2074,1151 @@ button:hover, button:disabled {
     margin: 20px 0;
     box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
 }
+
+/* Settings Modal Styles */
+.settings-modal-content {
+    max-width: 500px;
+    width: 90%;
+    padding: 20px;
+}
+
+.settings-section {
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.settings-section h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+    color: #333;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 16px;
+    max-width: 100%;
+}
+
+.setting-item:last-child {
+    margin-bottom: 0;
+}
+
+.setting-item label {
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    color: #333;
+    flex: 1;
+}
+
+.toggle-switch-container {
+    margin-left: 8px;
+    padding-right: 25px; /* Make room for indicator light */
+}
+
+/* Settings select */
+.settings-modal-content .settings-select {
+    width: 200px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    background-color: white;
+}
+
+.placeholder-text {
+    color: #888;
+    font-style: italic;
+    margin: 8px 0;
+}
+
+.settings-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+.settings-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+#save-settings {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#save-settings:hover {
+    background-color: #45a049;
+}
+
+#cancel-settings {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+#cancel-settings:hover {
+    background-color: #e8e8e8;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .settings-modal-content {
+        width: 90%;
+        margin: 20px auto;
+    }
+
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .settings-select {
+        width: 100%;
+    }
+
+    .settings-footer {
+        flex-direction: column;
+    }
+
+    .settings-button {
+        width: 100%;
+    }
+}
+
+/* Animation Control */
+.animations-disabled {
+    /* Disable all transitions */
+    transition: none !important;
+}
+
+.animations-disabled * {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Specific animation overrides */
+.animations-disabled .potato .growth-indicator {
+    transition: none !important;
+}
+
+.animations-disabled .potato.harvestable {
+    animation: none !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.8) !important;
+}
+
+.animations-disabled .quantum-potato {
+    animation: none !important;
+    box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.3) !important;
+}
+
+.animations-disabled .poof-animation-red {
+    display: none !important;
+}
+
+.animations-disabled #plant-button:active {
+    transform: translateY(4px);
+    transition: none !important;
+}
+
+/* Animation Control */
+.animations-disabled {
+    /* Disable all transitions */
+    transition: none !important;
+}
+
+.animations-disabled * {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Specific animation overrides */
+.animations-disabled .potato .growth-indicator {
+    /* Ensure no transitions are possible */
+    transition-property: none !important;
+    -webkit-transition-property: none !important;
+    -moz-transition-property: none !important;
+    -o-transition-property: none !important;
+    transition: none !important;
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -o-transform: none !important;
+    animation: none !important;
+    -webkit-animation: none !important;
+    -moz-animation: none !important;
+    -o-animation: none !important;
+}
+
+.potato .growth-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(76, 175, 80, 0.4);
+    z-index: 5;
+    opacity: 0;
+}
+
+/* Only add transitions when animations are explicitly enabled */
+body:not(.animations-disabled) .potato .growth-indicator {
+    transition: height 0.5s ease-out;
+}
+
+.potato:hover .growth-indicator {
+    opacity: 1;
+}
+
+/* Animation Control */
+.animations-disabled .potato .growth-indicator {
+    /* Ensure no transitions are possible */
+    transition-property: none !important;
+    -webkit-transition-property: none !important;
+    -moz-transition-property: none !important;
+    -o-transition-property: none !important;
+    transition: none !important;
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -o-transform: none !important;
+    animation: none !important;
+    -webkit-animation: none !important;
+    -moz-animation: none !important;
+    -o-animation: none !important;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.settings-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 16px;
+}
+
+.settings-row .setting-item {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+/* Settings labels */
+.setting-item label {
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    color: #333;
+    flex: 1;
+}
+
+/* Settings toggle container */
+.toggle-switch-container {
+    flex: 0 0 auto;
+    margin-left: 12px;
+}
+
+/* Settings select */
+.settings-modal-content .settings-select {
+    width: 200px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    background-color: white;
+}
+
+/* Settings Modal Toggle Switch Overrides */
+.settings-modal-content .toggle-switch {
+    width: 80px !important;  /* Smaller width for settings modal */
+    height: 40px !important; /* Smaller height for settings modal */
+}
+
+.settings-modal-content .toggle-switch div {
+    line-height: 40px !important; /* Match the new height */
+}
+
+.settings-modal-content .toggle-switch div:first-letter {
+    letter-spacing: 32px !important; /* Adjust letter spacing for smaller width */
+}
+
+.settings-modal-content .toggle-switch .indicator {
+    top: 8px !important;    /* Adjust for smaller height */
+    height: 20px !important; /* Smaller indicator */
+}
+
+.settings-modal-content .toggle-switch-container {
+    margin-left: 8px;
+    padding-right: 25px; /* Room for indicator */
+}
+
+/* Settings Modal Footer */
+.settings-footer {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.settings-button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.settings-button:first-child {
+    background-color: #4CAF50;
+    color: white;
+    width: 100%;
+}
+
+.settings-button:last-child {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .settings-modal-content {
+        margin: 0;
+        min-height: 100vh;
+        border-radius: 0;
+    }
+
+    .settings-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 15px;
+        margin: 0;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        flex-direction: column;
+    }
+
+    .settings-button {
+        width: 100%;
+        margin: 0;
+        padding: 15px;
+        font-size: 18px;
+    }
+
+    .settings-button:first-child {
+        order: -1;
+    }
+}
+
+/* First, let's fix the base modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+/* Add specific styles for upgrade modal */
+.upgrade-modal-content {
+    position: relative;
+    background-color: white;
+    max-width: 500px;
+    width: 90%;
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure modals are centered */
+.modal {
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+/* Fix z-index stacking */
+.modal-content {
+    position: relative;
+    z-index: 1001;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+/* Ensure close buttons are visible */
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    z-index: 1002;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+/* Upgrade Modal Specific Styles */
+.upgrade-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.upgrade-modal.show {
+    display: flex;
+}
+
+.upgrade-modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    z-index: 1001;
+}
+
+/* Ensure upgrade modals appear above other content */
+.upgrade-modal {
+    z-index: 1100;
+}
+
+.upgrade-modal-content {
+    z-index: 1101;
+}
+
+/* Help Modal Styles */
+.help-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.help-modal.open {
+    opacity: 1;
+}
+
+.help-modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    height: 90%;
+    margin: 2% auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.help-modal-content-wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.help-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+}
+
+.help-modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.help-modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #666;
+    cursor: pointer;
+    padding: 0 8px;
+    transition: color 0.2s;
+}
+
+.help-modal-close:hover {
+    color: #333;
+}
+
+.help-modal-nav {
+    width: 250px;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.help-modal-main {
+    flex: 1;
+    padding: 20px 30px;
+    overflow-y: auto;
+}
+
+/* Navigation styles */
+.help-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {
+    margin: 8px 0;
+}
+
+.nav-item a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.nav-item a:hover {
+    background-color: #f0f0f0;
+}
+
+.nav-indent {
+    padding-left: 20px;
+}
+
+/* Content styles */
+.help-title {
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.help-section {
+    font-size: 24px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    color: #444;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.help-subsection {
+    font-size: 20px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.help-list {
+    padding-left: 25px;
+    margin: 15px 0;
+}
+
+.help-list li {
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+.help-code {
+    background-color: #f5f5f5;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+/* Error state */
+.help-error {
+    text-align: center;
+    padding: 40px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.help-error h3 {
+    color: #d32f2f;
+    margin-bottom: 20px;
+}
+
+.help-error button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.help-error button:hover {
+    background-color: #45a049;
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+    .help-modal-content {
+        background-color: #1a1a1a;
+        color: #fff;
+    }
+
+    .help-modal-header {
+        background-color: #2a2a2a;
+        border-bottom-color: #333;
+    }
+
+    .help-modal-header h2 {
+        color: #fff;
+    }
+
+    .help-modal-close {
+        color: #999;
+    }
+
+    .help-modal-close:hover {
+        color: #fff;
+    }
+
+    .help-modal-nav {
+        border-right-color: #333;
+    }
+
+    .nav-item a {
+        color: #ddd;
+    }
+
+    .nav-item a:hover {
+        background-color: #2a2a2a;
+    }
+
+    .help-title {
+        color: #fff;
+    }
+
+    .help-section {
+        color: #eee;
+        border-bottom-color: #333;
+    }
+
+    .help-subsection {
+        color: #ddd;
+    }
+
+    .help-code {
+        background-color: #2a2a2a;
+    }
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+    .help-modal-content {
+        width: 95%;
+        height: 95%;
+        margin: 2.5% auto;
+    }
+
+    .help-modal-nav {
+        width: 200px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .help-modal-content {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .help-modal-nav {
+        display: none; /* Hide nav on mobile, will add hamburger menu later */
+    }
+}
+
+/* Section highlight effect */
+@keyframes highlight-section {
+    0% { background-color: transparent; }
+    30% { background-color: rgba(76, 175, 80, 0.2); }
+    100% { background-color: transparent; }
+}
+
+    .help-section.highlight,
+    .help-subsection.highlight {
+        animation: highlight-section 2s ease-out;
+    }
+
+/* Dark theme support for highlight */
+@media (prefers-color-scheme: dark) {
+    @keyframes highlight-section-dark {
+        0% { background-color: transparent; }
+        30% { background-color: rgba(76, 175, 80, 0.15); }
+        100% { background-color: transparent; }
+    }
+
+    .help-section.highlight,
+    .help-subsection.highlight {
+        animation: highlight-section-dark 2s ease-out;
+    }
+}
+
+/* Mobile adjustments for final stats */
+@media screen and (max-width: 768px) {
+    .singularity-screen {
+        position: fixed;
+        height: 100%;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .singularity-content {
+        padding: 20px;
+        margin: 0 auto;
+        width: 90%;
+        gap: 0px;
+    }
+
+    .final-stats {
+        margin: 10px 0;
+        padding: 15px;
+    }
+
+    .final-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+        padding-bottom: 30px; /* Add padding at bottom for better scrolling */
+    }
+
+    .final-button {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0;
+    }
+}
+
+/* Automation Panel */
+.panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel.open {
+    right: 0;
+}
+
+.panel-header {
+    padding: 20px;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panel-header h2 {
+    margin: 0;
+    border: none;
+}
+
+.panel-header-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.panel-controls {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+#expand-all-button {
+    font-size: 14px;
+    padding: 8px 16px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+#expand-all-button:hover {
+    background: #f5f5f5;
+}
+
+.automation-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.automation-device {
+    padding: 10px;
+    margin: 5px 0;
+    border-bottom: 1px solid #e5e5e5;
+    text-transform: capitalize;
+}
+
+.automation-device:last-child {
+    border-bottom: none;
+}
+
+.device-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.device-icon img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.device-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.device-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.device-name {
+    font-weight: bold;
+    margin: 0;
+}
+
+.device-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-active {
+    background: #e6ffe6;
+    color: #006600;
+}
+
+.status-inactive {
+    background: #ffe6e6;
+    color: #660000;
+}
+
+.device-description {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.device-rates {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.rate-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.rate-cost {
+    background: rgba(255, 200, 200, 0.2);
+    border-left: 3px solid #ffcccc;
+}
+
+.rate-reward {
+    background: rgba(200, 255, 200, 0.2);
+    border-left: 3px solid #ccffcc;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .panel {
+        right: -100%;
+        width: 100%;
+    }
+
+    .automation-device {
+        grid-template-columns: 50px 1fr;
+        gap: 10px;
+    }
+
+    .device-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+}
+
+    /* Override the general header button styles for expand-all button */
+    #expand-all-button {
+        font-size: 14px;
+        padding: 8px 16px;
+        border: 1px solid #e5e5e5;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        width: 100%;
+    }
+
+    #expand-all-button:hover {
+        background: #f5f5f5;
+    }
+
+    .automation-section {
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        background: white;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0 0 10px 0;
+        color: #333;
+    }
+
+    .automation-section p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .automation-device {
+        border-bottom: 1px solid #e5e5e5;
+        overflow: hidden;
+    }
+
+    .automation-device:last-child {
+        border-bottom: none;
+    }
+
+    .device-header {
+        padding: 15px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        transition: background-color 0.2s ease;
+    }
+
+    .device-header:hover {
+        background: #f5f5f5;
+    }
+
+    .device-header .expand-icon {
+        font-size: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .device-header.expanded .expand-icon {
+        transform: rotate(180deg);
+    }
+
+    .device-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+        background: #f9f9f9;
+        padding: 0 15px;
+    }
+
+    .device-content.expanded {
+        max-height: 500px; /* Adjust based on content */
+        padding: 15px;
+    }
+
+    .device-details {
+        display: grid;
+        gap: 10px;
+    }
+
+    .device-status {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .status-active {
+        background: #e6ffe6;
+        color: #006600;
+    }
+
+    .status-inactive {
+        background: #ffe6e6;
+        color: #660000;
+    }
+
+    .device-rates {
+        display: flex;
+        gap: 15px;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .rate-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .status-depleted {
+        background: #fff3e0;
+        color: #e65100;
+    }
+
+    .close-panel {
+        background: none;
+        border: 1px solid #e5e5e5;
+        border-radius: 4px;
+        font-size: 20px;
+        color: #666;
+        cursor: pointer;
+        padding: 4px 8px;
+        margin: 0;
+        transition: background-color 0.2s ease;
+    }
+
+    .close-panel:hover {
+        background: #f5f5f5;
+    }
+
+    .empty-automation-message {
+        text-align: center;
+        padding: 2rem;
+        color: #666;
+        font-style: italic;
+        font-size: 1.1em;
+    }
+
+    /* Skip link - for keyboard users to skip navigation */
+    .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #000;
+        color: white;
+        padding: 8px;
+        z-index: 100;
+        transition: top 0.3s ease;
+    }
+
+    .skip-link:focus {
+        top: 0;
+    }
+
+    /* Focus styles - only show outline on keyboard focus, not on mouse clicks */
+    [role="button"]:focus,
+    button:focus,
+    input:focus,
+    select:focus,
+    a:focus {
+        outline: none;
+    }
+    
+    /* Show custom focus ring only when using keyboard */
+    [role="button"]:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    a:focus-visible {
+        outline: 2px solid #4A90E2;
+        outline-offset: 2px;
+    }
+

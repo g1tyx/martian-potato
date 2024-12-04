@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Martian Potato - Image Gallery</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #2a2a2a;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-item .caption {
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4a4a4a;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #666;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-button">← Back to Game</a>
+    <h1>Martian Potato Image Gallery</h1>
+    <div class="gallery" id="imageGallery"></div>
+
+    <script>
+        async function loadImages() {
+            const gallery = document.getElementById('imageGallery');
+            
+            try {
+                const response = await fetch('/api/images');
+                const images = await response.json();
+                
+                images.forEach(image => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    
+                    const img = document.createElement('img');
+                    img.src = `/images/${image}`;
+                    img.alt = image.split('.')[0];
+                    
+                    const caption = document.createElement('div');
+                    caption.className = 'caption';
+                    caption.textContent = image.split('.')[0].replace(/-/g, ' ');
+                    
+                    item.appendChild(img);
+                    item.appendChild(caption);
+                    gallery.appendChild(item);
+                });
+            } catch (error) {
+                console.error('Error loading images:', error);
+                gallery.innerHTML = '<p>Error loading images. Please try again later.</p>';
+            }
+        }
+
+        window.addEventListener('load', loadImages);
+    </script>
+</body>
+</html> 

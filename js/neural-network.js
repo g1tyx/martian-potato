@@ -235,7 +235,7 @@ function toggleTerminal() {
     
     // Update button text/icon if needed
     if (minimizeBtn) {
-        minimizeBtn.textContent = terminalMinimized ? '□' : '−';
+        minimizeBtn.textContent = terminalMinimized ? '□' : '';
     }
 }
 
@@ -330,7 +330,7 @@ function startFinalSequence(isLoading = false) {
     
     // Track the start of final sequence
     trackEvent('final_sequence_started', {
-        total_playtime_seconds: Math.floor((Date.now() - gameStartTime) / 1000),
+        total_playtime_seconds: Math.floor((Date.now() - window.gameStartTime) / 1000),
         total_potatoes_harvested: totalPotatoesHarvested,
         is_loading_save: isLoading
     });
@@ -411,7 +411,7 @@ function startFinalSequence(isLoading = false) {
 function showFinalStats() {
     // Track game completion
     trackEvent('game_completed', {
-        total_playtime_seconds: Math.floor((Date.now() - gameStartTime) / 1000),
+        total_playtime_seconds: Math.floor((Date.now() - window.gameStartTime) / 1000),
         total_potatoes_harvested: totalPotatoesHarvested,
         upgrades_purchased: Object.values(upgrades).filter(u => u.purchased).length,
         automation_devices: getAutomationDevicesCount(),
@@ -434,7 +434,7 @@ function showFinalStats() {
             </p>
             <p>
                 <span class="stat-label">Time as Creator:</span>
-                <span class="stat-value">${getPlaytime()}</span>
+                <span class="stat-value">${window.getElapsedMartianTime()}</span>
             </p>
         </div>
     `;
@@ -485,7 +485,7 @@ function showFinalStats() {
     // Track secret ending if found
     if (finalPotatoClicks === 10) {
         trackEvent('secret_ending_found', {
-            total_playtime_seconds: Math.floor((Date.now() - gameStartTime) / 1000)
+            total_playtime_seconds: Math.floor((Date.now() - window.gameStartTime) / 1000)
         });
     }
 }

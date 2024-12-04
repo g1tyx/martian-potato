@@ -96,7 +96,7 @@
     <meta name="game:release_date" content="2024">
 
     <!-- Google Analytics 4 -->
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-8WHGFXBQGZ"></script>
+<!--     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8WHGFXBQGZ"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
@@ -107,196 +107,208 @@
 <body>
     <script src="chs.js"></script>
     <script src="core.js"></script>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
-    <div id="toast-container"></div>
+    <div id="toast-container" role="alert" aria-live="polite"></div>
     <div id="game-container">
-        <div id="game-header">
-            <h1>Martian Potato</h1>
-            <div class="game-buttons">
-                <button id="save-button">Save Game</button>
-                <button id="reset-button">Reset Game</button>
-                <button id="chart-button" class="icon-button">📊</button>
-            </div>
-        </div>
-        <button id="plant-button">Plant Potato</button>
-        <div id="stats-container">
-            <div id="resources">
-                <h2>Resources</h2>
-                <p id="potato-count">Potatoes: 0</p>
-                <p id="water-count">Water: 20</p>
-                <p id="ice-level">Ice: 20</p>
-                <p id="nutrients">Nutrients: 20</p>
-            </div>
-            <div id="production">
-                <h2>Rovers</h2>
-                <p id="automated-planters">Planting Rovers: 0</p>
-                <p id="auto-harvesters">Harvesting Rovers: 0</p>
-                <p id="nutrient-prospecting-rovers">Prospecting Rovers: 0</p>
-            </div>
-        </div>
-        <div id="potato-field"></div>
-        <div id="action-cards-container">
-            <div id="exploration-container" class="action-card clickable">
-                <h3>Explore Mars Surface</h3>
-                <div id="explore-button" class="action-icon">👩‍🚀</div>
-                <span id="exploration-cooldown" class="action-cooldown">Ready</span>
-            </div>
-            <div id="ice-melting-container" class="action-card clickable" style="display: none;">
-                <h3>Manual Ice Melting</h3>
-                <div id="ice-cube" class="action-icon">🧊</div>
-                <p id="ice-melting-progress" class="action-cooldown">Clicks: 0 / 5</p>
-            </div>
-            <div id="ice-melting-basin-container" class="action-card clickable" style="display: none;">
-                <h3>Fill Ice Melting Basin</h3>
-                <div class="action-icon">🛁</div>
-                <p id="basin-cooldown" class="action-cooldown">Ready</p>
-            </div>
-            <div id="subsurface-aquifer-tapper-container" class="action-card toggle-action-card" style="display: none;">
-                <h3>Subsurface Aquifer Tapper</h3>
-                <div class="toggle-switch-container">
-                    <label class="toggle-switch water-ice">
-                        <input type="checkbox" id="subsurface-aquifer-tapper-toggle">
-                        <div>ΟΙ</div><b></b>
-                        <span class="indicator"></span>
-                    </label>
+        <nav role="navigation" aria-label="Main menu">
+            <div id="game-header">
+                <h1>Martian Potato</h1>
+                <div class="game-buttons">
+                    <button id="save-button" aria-label="Save Game">Save Game</button>
+                    <button id="reset-button" aria-label="Reset Game">Reset Game</button>
+                    <button id="help-button" onclick="helpModal.open()" aria-label="Help">📚</button>
+                    <button id="chart-button" aria-label="View Statistics">📊</button>
+                    <button id="settings-button" aria-label="Settings">⚙️</button>
+                    <button id="automation-panel-toggle" aria-label="Toggle Automation Panel" aria-expanded="false">🤖</button>
                 </div>
             </div>
-            <div id="bucket-wheel-excavator-container" class="action-card toggle-action-card" style="display: none;">
-                <h3>Bucket-Wheel Excavator</h3>
-                <div class="toggle-switch-container">
-                    <label class="toggle-switch multi-resource">
-                        <input type="checkbox" id="bucket-wheel-excavator-toggle">
-                        <div>ΟΙ</div><b></b>
-                        <span class="indicator"></span>
-                    </label>
+        </nav>
+        <main id="main-content">
+            <button id="plant-button" aria-label="Plant Potato">Plant Potato</button>
+            <div id="stats-container">
+                <div id="resources" role="region" aria-label="Resource Statistics">
+                    <h2>Resources</h2>
+                    <p id="potato-count" aria-live="polite">Potatoes: 0</p>
+                    <p id="water-count" aria-live="polite">Water: 20</p>
+                    <p id="ice-level" aria-live="polite">Ice: 20</p>
+                    <p id="nutrients" aria-live="polite">Nutrients: 20</p>
+                </div>
+                <div id="production">
+                    <h2>Rovers</h2>
+                    <p id="automated-planters">Planting Rovers: 0</p>
+                    <p id="auto-harvesters">Harvesting Rovers: 0</p>
+                    <p id="nutrient-prospecting-rovers">Prospecting Rovers: 0</p>
                 </div>
             </div>
-            <div id="subterranean-tuber-tunneler-container" class="action-card toggle-action-card" style="display: none;">
-                <h3>Subterranean Tuber Tunneler</h3>
-                <div class="toggle-switch-container">
-                    <label class="toggle-switch multi-resource">
-                        <input type="checkbox" id="subterranean-tuber-tunneler-toggle" onchange="toggleSubterraneanTuberTunneler()">
-                        <div>ΟΙ</div><b></b>
-                        <span class="indicator"></span>
-                    </label>
+            <div id="potato-field"></div>
+            <div id="action-cards-container" role="region" aria-label="Game Actions">
+                <div id="exploration-container" class="action-card clickable" role="button" tabindex="0" aria-label="Explore Mars Surface">
+                    <h3>Explore Mars Surface</h3>
+                    <div id="explore-button" class="action-icon" aria-hidden="true">👩‍🚀</div>
+                    <span id="exploration-cooldown" class="action-cooldown" aria-live="polite">Ready</span>
                 </div>
-            </div>
-            <div id="nuclear-ice-melter-container" class="action-card double-width" style="display: none;">
-                <h3>Nuclear Ice Melter</h3>
-                <div class="nuclear-ice-melter-controls">
-                    <div id="nuclear-ice-melter-knob" class="knob"></div>
-                    <div id="nuclear-ice-melter-display" class="seven-segment-display">00</div>
+                <div id="ice-melting-container" class="action-card clickable" role="button" tabindex="0" aria-label="Manual Ice Melting" style="display: none;">
+                    <h3>Manual Ice Melting</h3>
+                    <div id="ice-cube" class="action-icon" aria-hidden="true">🧊</div>
+                    <p id="ice-melting-progress" class="action-cooldown" aria-live="polite">Clicks: 0 / 5</p>
+                </div>
+                <div id="ice-melting-basin-container" class="action-card clickable" style="display: none;">
+                    <h3>Fill Ice Melting Basin</h3>
+                    <div class="action-icon">🛁</div>
+                    <p id="basin-cooldown" class="action-cooldown">Ready</p>
+                </div>
+                <div id="subsurface-aquifer-tapper-container" class="action-card toggle-action-card" style="display: none;">
+                    <h3>Subsurface Aquifer Tapper</h3>
                     <div class="toggle-switch-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="nuclear-ice-melter-toggle">
+                        <label class="toggle-switch water-ice">
+                            <input type="checkbox" id="subsurface-aquifer-tapper-toggle">
                             <div>ΟΙ</div><b></b>
                             <span class="indicator"></span>
                         </label>
                     </div>
                 </div>
-            </div>
-            <div id="polar-cap-mining-container" class="action-card toggle-action-card" style="display: none;">
-                <h3>Polar Cap Mining</h3>
-                <div class="toggle-switch-container">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="polar-cap-mining-toggle">
-                        <div>ΟΙ</div><b></b>
-                        <span class="indicator"></span>
-                    </label>
-                </div>
-            </div>
-            <div id="cometary-ice-harvester-container" class="action-card toggle-action-card" style="display: none;">
-                <h3>Cometary Ice Harvester</h3>
-                <div class="button-container">
-                    <button id="cometary-ice-harvester-button" class="action-button water-ice">Launch</button>
-                </div>
-                <div class="led-progress-bar">
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                </div>
-            </div>
-            <div id="quantum-spud-spawner-container" class="action-card toggle-action-card" style="display: none;">
-                <h3>Quantum Spud Spawner</h3>
-                <div class="toggle-switch-container">
-                    <label class="toggle-switch quantum">
-                        <input type="checkbox" id="quantum-spud-spawner-toggle">
-                        <div>ΟΙ</div><b></b>
-                        <span class="indicator"></span>
-                    </label>
-                </div>
-            </div>
-            <div id="martian-potato-colonizer-container" class="action-card toggle-action-card" style="display: none;">
-                <h3>Martian Potato Colonizer</h3>
-                <div class="button-container">
-                    <button class="action-button colonizer">Colonize</button>
-                    <p class="depleted-message" style="display: none;">Resources Depleted</p>
-                </div>
-                <div class="led-progress-bar">
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                    <div class="led-light"></div>
-                </div>
-            </div>
-        </div>
-        <div id="upgrades-container">
-            <h2>Technology</h2>
-            <div id="tech-tree-container">
-                <button id="tech-tree-left" class="carousel-arrow">&lt;</button>
-                <div id="tech-tree"></div>
-                <button id="tech-tree-right" class="carousel-arrow">&gt;</button>
-            </div>
-        </div>
-        <div id="debug-info" style="display: none;">
-            <div class="debug-header">
-                <h3>Debug Information</h3>
-                <button id="minimize-debug" data-text="Minimize"></button>
-            </div>
-            <div id="debug-content">
-                <p id="memory-usage">Memory Usage: 0 MB</p>
-                <p id="potato-count-debug">Potato Count: 0</p>
-                <p id="active-potatoes">Active Potatoes: 0</p>
-                <p id="planting-delay">Planting Delay: 4000ms</p>
-                <p id="playtime-debug">Playtime: 0h 0m 0s</p>
-            </div>
-        </div>
-        <div id="neural-terminal" class="neural-terminal" style="display: none;">
-            <div class="terminal-header">
-                <span class="terminal-title">Potato Neural Network v1.0</span>
-                <button id="minimize-terminal" class="minimize-button" data-text="Minimize">_</button>
-            </div>
-            <div class="terminal-content">
-                <div class="progress-bar">
-                    <div class="progress-text">Training Progress: 0%</div>
-                    <div class="progress-indicator">
-                        [--------------------] 0%
+                <div id="bucket-wheel-excavator-container" class="action-card toggle-action-card" style="display: none;">
+                    <h3>Bucket-Wheel Excavator</h3>
+                    <div class="toggle-switch-container">
+                        <label class="toggle-switch multi-resource">
+                            <input type="checkbox" id="bucket-wheel-excavator-toggle">
+                            <div>ΟΙ</div><b></b>
+                            <span class="indicator"></span>
+                        </label>
                     </div>
                 </div>
-                <div id="terminal-messages" class="terminal-messages">
-                    <!-- Messages will be inserted here -->
+                <div id="subterranean-tuber-tunneler-container" class="action-card toggle-action-card" style="display: none;">
+                    <h3>Subterranean Tuber Tunneler</h3>
+                    <div class="toggle-switch-container">
+                        <label class="toggle-switch multi-resource">
+                            <input type="checkbox" id="subterranean-tuber-tunneler-toggle" onchange="toggleSubterraneanTuberTunneler()">
+                            <div>ΟΙ</div><b></b>
+                            <span class="indicator"></span>
+                        </label>
+                    </div>
+                </div>
+                <div id="nuclear-ice-melter-container" class="action-card double-width" style="display: none;">
+                    <h3>Nuclear Ice Melter</h3>
+                    <div class="nuclear-ice-melter-controls">
+                        <div id="nuclear-ice-melter-knob" class="knob"></div>
+                        <div id="nuclear-ice-melter-display" class="seven-segment-display">00</div>
+                        <div class="toggle-switch-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="nuclear-ice-melter-toggle">
+                                <div>ΟΙ</div><b></b>
+                                <span class="indicator"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div id="polar-cap-mining-container" class="action-card toggle-action-card" style="display: none;">
+                    <h3>Polar Cap Mining</h3>
+                    <div class="toggle-switch-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="polar-cap-mining-toggle">
+                            <div>ΟΙ</div><b></b>
+                            <span class="indicator"></span>
+                        </label>
+                    </div>
+                </div>
+                <div id="cometary-ice-harvester-container" class="action-card toggle-action-card" style="display: none;">
+                    <h3>Cometary Ice Harvester</h3>
+                    <div class="button-container">
+                        <button id="cometary-ice-harvester-button" class="action-button water-ice">Launch</button>
+                    </div>
+                    <div class="led-progress-bar">
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                    </div>
+                </div>
+                <div id="quantum-spud-spawner-container" class="action-card toggle-action-card" style="display: none;">
+                    <h3>Quantum Spud Spawner</h3>
+                    <div class="toggle-switch-container">
+                        <label class="toggle-switch quantum">
+                            <input type="checkbox" id="quantum-spud-spawner-toggle">
+                            <div>ΟΙ</div><b></b>
+                            <span class="indicator"></span>
+                        </label>
+                    </div>
+                </div>
+                <div id="martian-potato-colonizer-container" class="action-card toggle-action-card" style="display: none;">
+                    <h3>Martian Potato Colonizer</h3>
+                    <div class="button-container">
+                        <button class="action-button colonizer">Colonize</button>
+                        <p class="depleted-message" style="display: none;">Resources Depleted</p>
+                    </div>
+                    <div class="led-progress-bar">
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                        <div class="led-light"></div>
+                    </div>
                 </div>
             </div>
-        </div>
+            <div id="upgrades-container">
+                <h2>Technology</h2>
+                <div id="tech-tree-container" role="region" aria-label="Technology Tree">
+                    <button id="tech-tree-left" class="carousel-arrow" aria-label="Previous technology">&lt;</button>
+                    <div id="tech-tree" role="list"></div>
+                    <button id="tech-tree-right" class="carousel-arrow" aria-label="Next technology">&gt;</button>
+                </div>
+            </div>
+            <div id="debug-info" style="display: none;">
+                <div class="debug-header">
+                    <h3>Debug Information</h3>
+                    <button id="minimize-debug" data-text="Minimize"></button>
+                </div>
+                <div id="debug-content">
+                    <p id="memory-usage">Memory Usage: 0 MB</p>
+                    <p id="potato-count-debug">Potato Count: 0</p>
+                    <p id="active-potatoes">Active Potatoes: 0</p>
+                    <p id="planting-delay">Planting Delay: 4000ms</p>
+                    <p id="playtime-debug">Playtime: 0h 0m 0s</p>
+                </div>
+            </div>
+            <div id="neural-terminal" class="neural-terminal" style="display: none;">
+                <div class="terminal-header">
+                    <span class="terminal-title">Potato Neural Network v1.0</span>
+                    <button id="minimize-terminal" class="minimize-button" data-text="Minimize">_</button>
+                </div>
+                <div class="terminal-content">
+                    <div class="progress-bar">
+                        <div class="progress-text">Training Progress: 0%</div>
+                        <div class="progress-indicator">
+                            [--------------------] 0%
+                        </div>
+                    </div>
+                    <div id="terminal-messages" class="terminal-messages">
+                        <!-- Messages will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </main>
     </div> 
     <script src="js/knobs.js" defer></script>
     <script src="js/neural-network.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="js/help-modal.js"></script>
+    <script src="js/sound.js"></script>
+    <script src="js/settings.js"></script>
     <script src="js/game.js"></script>
     <script src="js/upgrades.js"></script>
     <script src="js/exploration.js"></script>
@@ -306,10 +318,10 @@
     <script src="js/lib/chartjs-adapter-date-fns.bundle.min.js"></script>
     
     <!-- Chart Modal -->
-    <div id="chart-modal" class="modal" style="display: none;">
+    <div id="chart-modal" class="modal" role="dialog" aria-labelledby="chart-modal-title" aria-modal="true" style="display: none;">
         <div class="modal-content chart-modal-content">
-            <span class="close-modal close-chart-modal">&times;</span>
-            <h2>Statistics</h2>
+            <span class="close-modal close-chart-modal" aria-label="Close statistics modal">&times;</span>
+            <h2 id="chart-modal-title">Statistics</h2>
             <p class="chart-subtitle">Total Potatoes Harvested: <span id="total-potatoes-count"></span></p>
             <p class="chart-subtitle">Elapsed Mission Time: <span id="mission-time-value"></span></p>
             <h3 class="chart-graph-title">Cumulative Potatoes Harvested Over Time</h3>
@@ -330,6 +342,87 @@
             <div class="final-buttons">
                 <button id="new-timeline-btn" class="final-button">Start New Timeline</button>
                 <button id="exit-reality-btn" class="final-button">Exit to Reality</button>
+            </div>
+        </div>
+    </div>
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal" role="dialog" aria-labelledby="settings-modal-title" aria-modal="true" style="display: none;">
+        <div class="modal-content settings-modal-content">
+            <span class="close-modal close-settings-modal" aria-label="Close settings modal">&times;</span>
+            <h2 id="settings-modal-title">Settings</h2>
+            
+            <!-- Game Settings Section -->
+            <div class="settings-section">
+                <h3>Game Settings</h3>
+                <div class="settings-row">
+                    <div class="setting-item">
+                        <label for="mute-toggle" id="mute-label">Sound</label>
+                        <div class="toggle-switch-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="mute-toggle" aria-labelledby="mute-label" role="switch">
+                                <div aria-hidden="true">ΟΙ</div><b></b>
+                                <span class="indicator" aria-hidden="true"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label for="auto-save">Auto-save Interval</label>
+                    <select id="auto-save" class="settings-select">
+                        <option value="0">Off</option>
+                        <option value="300">5 Minutes</option>
+                        <option value="600">10 Minutes</option>
+                        <option value="1800">30 Minutes</option>
+                        <option value="3600">60 Minutes</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Graphics Settings Section -->
+            <div class="settings-section">
+                <h3>Graphics Settings</h3>
+                <div class="setting-item">
+                    <label for="animations-toggle" id="animations-label">Animations</label>
+                    <div class="toggle-switch-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="animations-toggle" checked aria-labelledby="animations-label" role="switch">
+                            <div aria-hidden="true">ΟΙ</div><b></b>
+                            <span class="indicator" aria-hidden="true"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Settings Section -->
+            <div class="settings-section">
+                <h3>Notification Settings</h3>
+                <div class="setting-item">
+                    <label for="toast-level" id="toast-label">Toast Notifications</label>
+                    <select id="toast-level" class="settings-select" aria-labelledby="toast-label">
+                        <option value="all">All Notifications</option>
+                        <option value="important">Important Only</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-footer">
+                <button id="save-settings" class="settings-button">Save Changes</button>
+                <button id="cancel-settings" class="settings-button">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="automation-panel" class="panel" role="dialog" aria-labelledby="automation-panel-title" aria-modal="true">
+        <div class="panel-header">
+            <h2 id="automation-panel-title">Automation</h2>
+            <button class="close-panel" aria-label="Close automation panel">×</button>
+        </div>
+        <div class="panel-content">
+            <div class="panel-controls">
+                <button id="expand-all-button" onclick="toggleAllDevices()">Expand All</button>
+            </div>
+            <div id="automation-devices" class="automation-grid">
+                <!-- Automation devices will be dynamically added here -->
             </div>
         </div>
     </div>
