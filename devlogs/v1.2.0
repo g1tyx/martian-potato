@@ -1,0 +1,47 @@
+<h1> Version 1.2.0 - UI Improvements & Game Balance</h1>
+
+<h2>Major Changes</h2>
+<ul>
+    <li>Added automation panel showing unlocked upgrades and their effects</li>
+    <li>Introduced new settings to customize graphics and gameplay options</li>
+    <li>Added new help system with game instructions</li>
+    <li>Added image gallery showcasing Midjourney-generated game art (<a href="https://www.martianpotato.com/gallery.html">https://www.martianpotato.com/gallery.html</a>)</li>
+</ul>
+
+<h2>UI/UX Improvements</h2>
+<ul>
+    <li>Fixed scaling issues reported by multiple users (@dbfnq, @Draekniloth, @ldyaceina)</li>
+    <li>Fixed mobile browser scrolling issue with end-game statistics screen (@E5Burrito)</li>
+    <li>Implemented comprehensive accessibility improvements including:
+        <ul>
+            <li>ARIA labels and roles for interactive elements</li>
+            <li>Improved keyboard navigation</li>
+            <li>High contrast focus indicators</li>
+            <li>Enhanced screen reader support</li>
+        </ul>
+    </li>
+    <li>Fixed quantum potato visual effects and animations</li>
+</ul>
+
+<h2>Game Balance</h2>
+<ul>
+    <li>Significantly reduced time to unlock nutrient automation (@june_moment)</li>
+    <li>Added Nutrient Prospecting Rover (generates 6 nutrients every 20 seconds)</li>
+    <li>Rebalanced early-game progression to reduce manual clicking requirements</li>
+</ul>
+
+<h2>Quality of Life</h2>
+<ul>
+    <li>Improved background processing for better performance on Chromebooks (@Scisnien)</li>
+    <li>Added customizable notification levels to toast notification system</li>
+    <li>Improved modal system with better stacking and visibility</li>
+    <li>Fixed quantum spud spawner animations and effects</li>
+</ul>
+
+<h2>Known Issues</h2>
+<ul>
+    <li>Planning to improve layout for 16:9 monitors to better utilize horizontal space (suggested by @AnotherBoris)</li>
+    <li>Working on additional tooltip implementations for all upgrades (suggested by @Armandirow)</li>
+</ul>
+
+<p>Thank you to everyone who provided feedback and helped identify these issues! 🥔</p>
